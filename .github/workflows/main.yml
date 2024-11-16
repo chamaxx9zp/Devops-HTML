@@ -1,0 +1,25 @@
+name: Deploy Website via SSH
+
+on:
+  push:
+    branches:
+      - main  # Adjust to your desired branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.CHAMAXX_SK }}
+
+    - name: Copy Files to Server
+      run: |
+        scp -r ./Devops-HTML/* ubuntu@52.77.254.127:/www/wwwroot/CHAMAXX.LINKPC.NET
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh-agent.sock
