@@ -18,12 +18,14 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Add server to known hosts
+    - name: Create SSH directory and known_hosts file
       run: |
+        mkdir -p ~/.ssh
         ssh-keyscan -H 52.77.254.127 >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts  # Ensure the permissions are set correctly
 
-    - name: Copy Files to Server
+    - name: Copy Files to Server (Skip Host Key Checking)
       run: |
-        scp -r ./Devops-HTML/* ubuntu@52.77.254.127:/www/wwwroot/CHAMAXX.LINKPC.NET
+        scp -o StrictHostKeyChecking=no -r ./Devops-HTML/* ubuntu@52.77.254.127:/www/wwwroot/CHAMAXX.LINKPC.NET
       env:
         SSH_AUTH_SOCK: /tmp/ssh-agent.sock
